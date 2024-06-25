@@ -20,8 +20,6 @@ jobs:
         git config --global user.email "61996354+maximuslotro@users.noreply.github.com"
         git config --global user.name "maximuslotro"
 
-    - run: ls
-
     - name: Clone private repository
       env:
         PAT: ${{ secrets.EXTENDED_REPO_CODE }}
@@ -29,18 +27,12 @@ jobs:
         git clone https://maximuslotro:${PAT}@github.com/maximuslotro/LotrRenewedExtended.git private-repo
         git checkout main  # Ensure we are on the main branch
 
-    - run: ls
-
     - name: Find latest commit for en_us.json
       id: get-commit
       run: |
         cd private-repo
         COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- src/generated/resources/assets/lotrextended/lang/en_us.json)
         echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
-        echo "Latest hash: $commit_hash"
-        echo "Latest hash: $COMMIT_HASH"
-
-    - run: ls
 
     - name: Check if commit hash has changed
       id: check-commit
@@ -49,7 +41,7 @@ jobs:
         CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
           if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
             echo "Commit hash has changed. Proceeding with file push."
-            gh variable set LASTENUSCOMMENT --body "thisworks?"
+            gh variable set LASTENUSCOMMENT --body $CURRENT_COMMIT_HASH"
           else
             echo "Commit hash has not changed. Skipping."
             exit 0  # Exit successfully without further actions
@@ -62,8 +54,6 @@ jobs:
         mkdir -p langs/upstream/
         cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json langs/upstream/en_us.json
 
-    - run: ls
-
     - name: Checkout source repository
       uses: actions/checkout@v3
       with:
@@ -74,7 +64,7 @@ jobs:
 
     - name: Push changes
       run: |
-        COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
+        COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         git push origin main
