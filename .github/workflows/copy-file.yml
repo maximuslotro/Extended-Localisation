@@ -27,15 +27,11 @@ jobs:
         git clone https://maximuslotro:${PAT}@github.com/maximuslotro/LotrRenewedExtended.git private-repo
         git checkout main  # Ensure we are on the main branch
 
-    - run: ls
-
     - name: Find latest commit for en_us.json
       id: get-commit
       run: |
         COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json)
         echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
-
-    - run: ls
 
     - name: Check if commit hash has changed
       id: check-commit
@@ -57,8 +53,6 @@ jobs:
           echo "${{ steps.get-commit.outputs.COMMIT_HASH }}" > "$HASH_FILE"
         fi
 
-    - run: ls
-
     - name: Copy file
       run: |
         mkdir -p langs/upstream/
@@ -70,6 +64,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        clean: false
 
     - run: ls
 
