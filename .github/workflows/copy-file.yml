@@ -63,7 +63,7 @@ jobs:
 
     - name: Push changes
       run: |
-        #COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
+        #COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $CURRENT_COMMIT_HASH"
         git push origin main
