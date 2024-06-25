@@ -41,7 +41,7 @@ jobs:
         CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
           if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
             echo "Commit hash has changed. Proceeding with file push."
-            gh variable set LASTENUSCOMMENT --body $CURRENT_COMMIT_HASH"
+            gh variable set LASTENUSCOMMENT --body "$CURRENT_COMMIT_HASH"
           else
             echo "Commit hash has not changed. Skipping."
             exit 0  # Exit successfully without further actions
