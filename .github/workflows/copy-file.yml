@@ -47,7 +47,7 @@ jobs:
             exit 0  # Exit successfully without further actions
           fi
       env:
-        GITHUB_TOKEN: ${{ secrets.EXTENDED_REPO_CODE }}
+        GITHUB_TOKEN: ${{ secrets.EXTENDED_LANG_REPO_CODE }}
     - name: Copy file
       run: |
         mkdir -p langs/upstream/
