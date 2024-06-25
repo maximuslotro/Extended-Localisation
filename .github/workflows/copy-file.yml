@@ -63,6 +63,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
+    - run: ls
     - name: Push changes
       run: |
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
