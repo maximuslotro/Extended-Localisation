@@ -36,22 +36,15 @@ jobs:
     - name: Check if commit hash has changed
       id: check-commit
       run: |
-        HASH_FILE="langs/upstream/hashes/en_us_hash.txt"
-        if [ -f "$HASH_FILE" ]; then
-          PREVIOUS_COMMIT_HASH=$(cat "$HASH_FILE")
-          CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
+        PREVIOUS_COMMIT_HASH=${{ vars.LASTENUSCOMMENT }}
+        CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
           if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
             echo "Commit hash has changed. Proceeding with file push."
-            echo "$CURRENT_COMMIT_HASH" > "$HASH_FILE"  # Update the commit hash file
+            gh variable set LASTENUSCOMMENT --body "$CURRENT_COMMIT_HASH"
           else
-            echo "Commit hash has not changed. Skipping file push."
+            echo "Commit hash has not changed. Skipping."
             exit 0  # Exit successfully without further actions
           fi
-        else
-          echo "Hash file does not exist. Creating and saving current commit hash."
-          mkdir -p langs/upstream/hashes/
-          echo "${{ steps.get-commit.outputs.COMMIT_HASH }}" > "$HASH_FILE"
-        fi
 
     - name: Copy file
       run: |
