@@ -32,7 +32,7 @@ jobs:
       run: |
         cd private-repo
         COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- src/generated/resources/assets/lotrextended/lang/en_us.json)
-        echo "::set-output name=commit_hash::$COMMIT_HASH"
+        run: echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
 
     - name: Copy file
       run: |
