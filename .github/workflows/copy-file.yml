@@ -32,7 +32,7 @@ jobs:
       run: |
         COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json)
         echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
-        echo "Latest hash: $COMMIT_HASH"
+        echo "Latest hash: $commit_hash"
 
     - name: Check if commit hash has changed
       id: check-commit
