@@ -30,18 +30,40 @@ jobs:
     - name: Find latest commit for en_us.json
       id: get-commit
       run: |
-        cd private-repo
-        COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- src/generated/resources/assets/lotrextended/lang/en_us.json)
-        echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+        COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json)
+        echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV  # Set as environment variable
 
     - name: Copy file
       run: |
-        mkdir -p upstream/langs/
-        cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json upstream/langs/en_us.json
-      
+        mkdir -p langs/upstream/
+        cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json langs/upstream/en_us.json
+
+    - name: Save commit hash to filemkdir -p langs/upstream/
+      run: |
+        mkdir -p langs/upstream/hashes/
+        echo "${{ steps.get-commit.outputs.COMMIT_HASH }}" > langs/upstream/hashes/en_us_hash.txt
+
+    - name: Check if commit hash has changed
+      id: check-commit
+      run: |
+        PREVIOUS_COMMIT_HASH=$(cat langs/upstream/hashes/commit_hash.txt)
+        CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
+        if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
+          echo "Commit hash has changed. Proceeding with file push."
+          echo "$CURRENT_COMMIT_HASH" > langs/upstream/hashes/commit_hash.txt  # Update the commit hash file
+        else
+          echo "Commit hash has not changed. Skipping file push."
+          exit 0  # Exit successfully without further actions
+        fi
+
+    - name: Checkout source repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Push changes
       run: |
-        COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
-        git add upstream/langs/en_us.json
-        git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+        #COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
+        git add langs/upstream/en_us.json
+        git commit -m "Copied en_us.json from private repo, latest edit commit: $CURRENT_COMMIT_HASH"
         git push origin main
