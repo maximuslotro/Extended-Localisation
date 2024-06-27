@@ -65,7 +65,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_ID=$(gh pr list --state open --head update-from-private-lang --json number --limit 1 --jq '.[0]')
+        PR_ID=$(gh pr list --state open --head update-from-private-lang --json number --limit 1 --jq '.[0].number')
         echo "ID: [$PR_ID]"
         echo "ID: [$PR_ID[0]]"
         if [ -z "$PR_ID" ] || [ "$PR_ID" = "[]" ]; then
