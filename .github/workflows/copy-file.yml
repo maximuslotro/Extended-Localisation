@@ -85,8 +85,9 @@ jobs:
         git fetch -p 
         _check_branch=$(git ls-remote --heads origin $BRANCH_NAME)
         if [[ -z ${_check_branch} ]]; then
-          echo "Remote branch does not exist, making"
+          echo "Remote branch does not exist, making!"
           git checkout -b $BRANCH_NAME
+          git push origin $BRANCH_NAME
         else
           echo "Remote branch exists"
           git checkout $BRANCH_NAME
@@ -110,32 +111,21 @@ jobs:
         cp private-repo/upstream/en_us.json langs/upstream/en_us.json
         rm -r private-repo
         git add langs/upstream/en_us.json
-        if [[ -z ${_check_branch} ]]; then
-          echo "Remote branch does not exist, pushing directly"
-          LOCALR=$(git rev-parse @)
-          BASER=$(git merge-base @ @{u})
-          if [ $LOCALR = $BASER ]; then
-            echo "No changes, exiting!"
-            exit 0
-          else
-            echo "Branch needs to push"
-            git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-            git push origin $BRANCH_NAME
-          fi
+        LOCALED=$(git rev-parse @)
+        REMOTED=$(git rev-parse @{u})
+        BASED=$(git merge-base @ @{u})
+        # Check if the branch is up-to-date again to stop pushing same changes
+        if [ $LOCALED = $REMOTED ]; then
+          echo "Branch is up-to-date"
+        elif [ $LOCALED = $BASED ]; then
+          exit 0
+        elif [ $REMOTED = $BASED ]; then
+          echo "Branch needs to push"
+          git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+          git push origin $BRANCH_NAME
         else
-          # Check if the branch is up-to-date again to stop pushing same changes
-          if [ $LOCAL = $REMOTE ]; then
-            echo "Branch is up-to-date"
-          elif [ $LOCAL = $BASE ]; then
-            exit 0
-          elif [ $REMOTE = $BASE ]; then
-            echo "Branch needs to push"
-            git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-            git push origin $BRANCH_NAME
-          else
-            echo "Branch has diverged"
-            exit 1
-          fi
+          echo "Branch has diverged"
+          exit 1
         fi
         PR_ID=${{ steps.pr-check.outputs.pr_id }}
         if [ "$PR_ID" = "none" ]; then
