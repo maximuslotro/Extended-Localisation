@@ -76,17 +76,19 @@ jobs:
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git config pull.ff only
         echo "1"
-        git remote update
+        git stash save "lang"
+        git clear
+        ls
         echo "2"
-        git fetch 
+        git remote update
         echo "3"
-        git stash
+        git fetch 
         echo "4"
         git checkout $BRANCH_NAME
         echo "5"
         git pull origin $BRANCH_NAME # Pull latest update branch changes
         echo "6"
-        git stash apply
+        git stash apply stash@{lang}
         echo "7"
         git add langs/upstream/en_us.json
         echo "8"
