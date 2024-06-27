@@ -78,7 +78,7 @@ jobs:
         git config pull.ff only
         git remote update
         git fetch 
-        git checkout -b $BRANCH_NAME
+        git checkout $BRANCH_NAME
         git pull origin $BRANCH_NAME # Pull latest update branch changes
         ls
         git add langs/upstream/en_us.json
