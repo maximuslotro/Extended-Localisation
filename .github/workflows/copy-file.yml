@@ -51,8 +51,8 @@ jobs:
 
     - name: Copy file
       run: |
-        mkdir -p langs/upstream/
-        cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json langs/upstream/en_us.json
+        mkdir -p private-repo/upstream/
+        cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json private-repo/upstream/en_us.json
 
     - name: Checkout source repository
       uses: actions/checkout@v3
@@ -85,6 +85,7 @@ jobs:
         echo "3"
         git fetch 
         echo "4"
+        ls
         git checkout $BRANCH_NAME
         ls
         echo "5"
@@ -93,7 +94,7 @@ jobs:
         echo "6"
         git stash apply stash@{lang}
         echo "7"
-        git add langs/upstream/en_us.json
+        git add private-repo/upstream/en_us.json
         echo "8"
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         echo "9"
