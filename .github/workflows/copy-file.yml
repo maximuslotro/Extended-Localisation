@@ -87,7 +87,7 @@ jobs:
         if [[ -z ${_check_branch} ]]; then
           echo "Remote branch does not exist, making!"
           git checkout -b $BRANCH_NAME
-          git push origin $BRANCH_NAME
+          git push -u origin $BRANCH_NAME
         else
           echo "Remote branch exists"
           git checkout $BRANCH_NAME
