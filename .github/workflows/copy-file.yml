@@ -75,6 +75,7 @@ jobs:
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git checkout -b $BRANCH_NAME
+        git pull
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         git push origin $BRANCH_NAME
