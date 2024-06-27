@@ -80,9 +80,9 @@ jobs:
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         git push origin $BRANCH_NAME
-        PR_URL=${{ steps.pr-check.outputs.pr_url }}
-        if [ "$PR_URL" = "none" ]; then
-          gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
-        else
-          gh pr edit "$PR_URL" -body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-        fi
+        # PR_URL=${{ steps.pr-check.outputs.pr_url }}
+        # if [ "$PR_URL" = "none" ]; then
+          # gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
+        # else
+          # gh pr edit "$PR_URL" -body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+        # fi
