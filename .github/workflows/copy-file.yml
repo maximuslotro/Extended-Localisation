@@ -76,12 +76,28 @@ jobs:
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git config pull.ff only
         git remote update
-        git fetch 
-        git checkout $BRANCH_NAME
-        ls
-        git pull origin $BRANCH_NAME # Pull latest update branch changes
+        git fetch -p 
+        git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
+        git fetch origin # Fetch the latest changes
+        # Check if the branch is up-to-date
+        LOCAL=$(git rev-parse @)
+        REMOTE=$(git rev-parse @{u})
+        BASE=$(git merge-base @ @{u})
+        if [ $LOCAL = $REMOTE ]; then
+          echo "Branch is up-to-date"
+        elif [ $LOCAL = $BASE ]; then
+          echo "Branch needs to pull"
+          git pull origin $BRANCH_NAME # Pull latest update branch changes
+        elif [ $REMOTE = $BASE ]; then
+          echo "Branch needs to push"
+        else
+          echo "Branch has diverged"
+          exit 1
+        fi
         echo "7"
-        git add private-repo/upstream/en_us.json
+        cp  private-repo/upstream/en_us.json upstream/langs/en_us.json
+        rm -rv private-repo
+        git add upstream/langs/en_us.json
         echo "8"
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         echo "9"
