@@ -82,7 +82,14 @@ jobs:
         git config pull.ff only
         git remote update
         git fetch -p 
-        git checkout $BRANCH_NAME
+        _check_branch=$(git ls-remote --heads origin $BRANCH_NAME)
+        if [[ -z ${_check_branch} ]]; then
+          echo "Remote branch do not exist, making"
+          git checkout -b $BRANCH_NAME
+        else
+          echo "Remote branch exists"
+          git checkout $BRANCH_NAME
+        fi
         git fetch origin # Fetch the latest changes
         # Check if the branch is up-to-date
         LOCAL=$(git rev-parse @)
