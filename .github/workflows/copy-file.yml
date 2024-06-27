@@ -100,21 +100,19 @@ jobs:
         # Check if the branch is up-to-date again to stop pushing same changes
         if [ $LOCAL = $REMOTE ]; then
           echo "Branch is up-to-date"
-          exit 0
         elif [ $LOCAL = $BASE ]; then
-          echo "Branch needs to pull"
-          git pull origin $BRANCH_NAME # This should not happen, pull anyways
+          exit 0
         elif [ $REMOTE = $BASE ]; then
           echo "Branch needs to push"
+          git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+          git push origin $BRANCH_NAME
         else
           echo "Branch has diverged"
           exit 1
         fi
-        git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-        git push origin $BRANCH_NAME
-        # PR_URL=${{ steps.pr-check.outputs.pr_url }}
-        # if [ "$PR_URL" = "none" ]; then
-          # gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
-        # else
-          # gh pr edit "$PR_URL" -body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-        # fi
+        PR_URL=${{ steps.pr-check.outputs.pr_url }}
+        if [ "$PR_URL" = "none" ]; then
+          gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
+        else
+          gh pr edit "$PR_URL" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+        fi
