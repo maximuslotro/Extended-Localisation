@@ -75,6 +75,7 @@ jobs:
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         ls
+        git config pull.ff only
         git remote update
         git fetch 
         git checkout -b $BRANCH_NAME
