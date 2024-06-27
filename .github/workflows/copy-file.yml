@@ -78,7 +78,7 @@ jobs:
         ls
         echo "1"
         git stash save "lang"
-        git clean
+        git clean -f
         ls
         echo "2"
         git remote update
