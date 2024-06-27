@@ -80,7 +80,7 @@ jobs:
         echo "2"
         git fetch -p 
         echo "3"
-        git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
+        git checkout $BRANCH_NAME
         echo "4"
         git fetch origin # Fetch the latest changes
         echo "5"
