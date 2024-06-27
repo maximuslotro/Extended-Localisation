@@ -75,14 +75,20 @@ jobs:
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git config pull.ff only
+        echo "1"
         git remote update
+        echo "2"
         git fetch -p 
+        echo "3"
         git checkout -b $BRANCH_NAME || git checkout $BRANCH_NAME
+        echo "4"
         git fetch origin # Fetch the latest changes
+        echo "5"
         # Check if the branch is up-to-date
         LOCAL=$(git rev-parse @)
         REMOTE=$(git rev-parse @{u})
         BASE=$(git merge-base @ @{u})
+        echo "6"
         if [ $LOCAL = $REMOTE ]; then
           echo "Branch is up-to-date"
         elif [ $LOCAL = $BASE ]; then
