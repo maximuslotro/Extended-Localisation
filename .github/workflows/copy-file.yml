@@ -75,24 +75,11 @@ jobs:
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git config pull.ff only
-        ls
-        echo "1"
-        git stash save "lang"
-        git clean -f
-        ls
-        echo "2"
         git remote update
-        echo "3"
         git fetch 
-        echo "4"
-        ls
         git checkout $BRANCH_NAME
         ls
-        echo "5"
         git pull origin $BRANCH_NAME # Pull latest update branch changes
-        ls
-        echo "6"
-        git stash apply stash@{lang}
         echo "7"
         git add private-repo/upstream/en_us.json
         echo "8"
