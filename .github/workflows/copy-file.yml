@@ -78,8 +78,10 @@ jobs:
         git config pull.ff only
         git remote update
         git fetch 
+        git stash
         git checkout $BRANCH_NAME
         git pull origin $BRANCH_NAME # Pull latest update branch changes
+        git stash apply
         ls
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
