@@ -66,6 +66,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_URL=$(gh pr list --head maximuslotro:update-from-private-lang --json url --jq '.[0].url' || echo "none")
+        if [ -z "$PR_URL" ]; then
+          PR_URL="none"
+        fi
         echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
     - name: Create or update pull request
