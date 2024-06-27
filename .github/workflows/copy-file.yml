@@ -75,20 +75,14 @@ jobs:
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
         git config pull.ff only
-        echo "1"
         git remote update
-        echo "2"
         git fetch -p 
-        echo "3"
         git checkout $BRANCH_NAME
-        echo "4"
         git fetch origin # Fetch the latest changes
-        echo "5"
         # Check if the branch is up-to-date
         LOCAL=$(git rev-parse @)
         REMOTE=$(git rev-parse @{u})
         BASE=$(git merge-base @ @{u})
-        echo "6"
         if [ $LOCAL = $REMOTE ]; then
           echo "Branch is up-to-date"
         elif [ $LOCAL = $BASE ]; then
@@ -100,13 +94,10 @@ jobs:
           echo "Branch has diverged"
           exit 1
         fi
-        echo "7"
-        cp  private-repo/upstream/en_us.json upstream/langs/en_us.json
-        rm -rv private-repo
+        cp private-repo/upstream/en_us.json upstream/langs/en_us.json
+        rm -r private-repo
         git add upstream/langs/en_us.json
-        echo "8"
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-        echo "9"
         git push origin $BRANCH_NAME
         # PR_URL=${{ steps.pr-check.outputs.pr_url }}
         # if [ "$PR_URL" = "none" ]; then
