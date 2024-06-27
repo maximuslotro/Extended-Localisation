@@ -67,9 +67,10 @@ jobs:
       run: |
         PR_ID=$(gh pr list --state open --head maximuslotro:update-from-private-lang --json id --limit 1 || echo "none")
         echo "[$PR_ID]"
-        if [ -z "$PR_ID" ]; then
+        if [ -z "$PR_ID" ] || [ "$PR_ID" = "[]" ]; then
           PR_ID="none"
         fi
+        echo "[$PR_ID]"
         echo "pr_id=$PR_ID" >> $GITHUB_OUTPUT
 
     - name: Create or update pull request
