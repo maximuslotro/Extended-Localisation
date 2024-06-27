@@ -114,7 +114,7 @@ jobs:
           echo "Remote branch does not exist, pushing directly"
           LOCALR=$(git rev-parse @)
           BASER=$(git merge-base @ @{u})
-          if [ $LOCAL = $BASE ]; then
+          if [ $LOCALR = $BASER ]; then
             echo "No changes, exiting!"
             exit 0
           else
