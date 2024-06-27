@@ -83,11 +83,9 @@ jobs:
         git config pull.ff only
         git remote update
         git fetch -p 
-        echo "2"
         _check_branch=$(git ls-remote --heads origin $BRANCH_NAME)
-        echo "3"
         if [[ -z ${_check_branch} ]]; then
-          echo "Remote branch do not exist, making"
+          echo "Remote branch does not exist, making"
           git checkout -b $BRANCH_NAME
         else
           echo "Remote branch exists"
@@ -109,15 +107,21 @@ jobs:
             exit 1
           fi
         fi
-        echo "4"
         cp private-repo/upstream/en_us.json langs/upstream/en_us.json
         rm -r private-repo
         git add langs/upstream/en_us.json
-        echo "5"
         if [[ -z ${_check_branch} ]]; then
-          echo "Remote branch do not exist, pushing directly"
-          git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-          git push origin $BRANCH_NAME
+          echo "Remote branch does not exist, pushing directly"
+          LOCALR=$(git rev-parse @)
+          BASER=$(git merge-base @ @{u})
+          if [ $LOCAL = $BASE ]; then
+            echo "No changes, exiting!"
+            exit 0
+          else
+            echo "Branch needs to push"
+            git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+            git push origin $BRANCH_NAME
+          fi
         else
           # Check if the branch is up-to-date again to stop pushing same changes
           if [ $LOCAL = $REMOTE ]; then
@@ -133,7 +137,6 @@ jobs:
             exit 1
           fi
         fi
-        echo "6"
         PR_ID=${{ steps.pr-check.outputs.pr_id }}
         if [ "$PR_ID" = "none" ]; then
           echo "Made PR"
