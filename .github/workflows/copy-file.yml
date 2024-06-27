@@ -83,46 +83,57 @@ jobs:
         git config pull.ff only
         git remote update
         git fetch -p 
+        echo "2"
         _check_branch=$(git ls-remote --heads origin $BRANCH_NAME)
+        echo "3"
         if [[ -z ${_check_branch} ]]; then
           echo "Remote branch do not exist, making"
           git checkout -b $BRANCH_NAME
         else
           echo "Remote branch exists"
           git checkout $BRANCH_NAME
+          git fetch origin # Fetch the latest changes
+          # Check if the branch is up-to-date
+          LOCAL=$(git rev-parse @)
+          REMOTE=$(git rev-parse @{u})
+          BASE=$(git merge-base @ @{u})
+          if [ $LOCAL = $REMOTE ]; then
+            echo "Branch is up-to-date"
+          elif [ $LOCAL = $BASE ]; then
+            echo "Branch needs to pull"
+            git pull origin $BRANCH_NAME # Pull latest update branch changes
+          elif [ $REMOTE = $BASE ]; then
+            echo "Branch needs to push"
+          else
+            echo "Branch has diverged"
+            exit 1
+          fi
         fi
-        git fetch origin # Fetch the latest changes
-        # Check if the branch is up-to-date
-        LOCAL=$(git rev-parse @)
-        REMOTE=$(git rev-parse @{u})
-        BASE=$(git merge-base @ @{u})
-        if [ $LOCAL = $REMOTE ]; then
-          echo "Branch is up-to-date"
-        elif [ $LOCAL = $BASE ]; then
-          echo "Branch needs to pull"
-          git pull origin $BRANCH_NAME # Pull latest update branch changes
-        elif [ $REMOTE = $BASE ]; then
-          echo "Branch needs to push"
-        else
-          echo "Branch has diverged"
-          exit 1
-        fi
+        echo "4"
         cp private-repo/upstream/en_us.json langs/upstream/en_us.json
         rm -r private-repo
         git add langs/upstream/en_us.json
-        # Check if the branch is up-to-date again to stop pushing same changes
-        if [ $LOCAL = $REMOTE ]; then
-          echo "Branch is up-to-date"
-        elif [ $LOCAL = $BASE ]; then
-          exit 0
-        elif [ $REMOTE = $BASE ]; then
-          echo "Branch needs to push"
+        echo "5"
+        if [[ -z ${_check_branch} ]]; then
+          echo "Remote branch do not exist, pushing directly"
           git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
           git push origin $BRANCH_NAME
         else
-          echo "Branch has diverged"
-          exit 1
+          # Check if the branch is up-to-date again to stop pushing same changes
+          if [ $LOCAL = $REMOTE ]; then
+            echo "Branch is up-to-date"
+          elif [ $LOCAL = $BASE ]; then
+            exit 0
+          elif [ $REMOTE = $BASE ]; then
+            echo "Branch needs to push"
+            git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+            git push origin $BRANCH_NAME
+          else
+            echo "Branch has diverged"
+            exit 1
+          fi
         fi
+        echo "6"
         PR_ID=${{ steps.pr-check.outputs.pr_id }}
         if [ "$PR_ID" = "none" ]; then
           echo "Made PR"
