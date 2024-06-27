@@ -96,8 +96,11 @@ jobs:
         fi
         cp private-repo/upstream/en_us.json upstream/langs/en_us.json
         rm -r private-repo
+        echo "1"
         git add upstream/langs/en_us.json
+        echo "3"
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+        echo "4"
         git push origin $BRANCH_NAME
         # PR_URL=${{ steps.pr-check.outputs.pr_url }}
         # if [ "$PR_URL" = "none" ]; then
