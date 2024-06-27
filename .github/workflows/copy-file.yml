@@ -66,11 +66,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_ID=$(gh pr list --state open --head maximuslotro:update-from-private-lang --json id --limit 1 || echo "none")
-        echo "[$PR_ID]"
         if [ -z "$PR_ID" ] || [ "$PR_ID" = "[]" ]; then
           PR_ID="none"
         fi
-        echo "[$PR_ID]"
+        echo "ID: [$PR_ID]"
         echo "pr_id=$PR_ID" >> $GITHUB_OUTPUT
 
     - name: Create or update pull request
@@ -99,9 +98,9 @@ jobs:
           echo "Branch has diverged"
           exit 1
         fi
-        cp private-repo/upstream/en_us.json upstream/langs/en_us.json
+        cp private-repo/upstream/en_us.json langs/upstream/en_us.json
         rm -r private-repo
-        git add upstream/langs/en_us.json
+        git add langs/upstream/en_us.json
         # Check if the branch is up-to-date again to stop pushing same changes
         if [ $LOCAL = $REMOTE ]; then
           echo "Branch is up-to-date"
@@ -117,9 +116,9 @@ jobs:
         fi
         PR_ID=${{ steps.pr-check.outputs.pr_id }}
         if [ "$PR_ID" = "none" ]; then
-          echo "0"
+          echo "Made PR"
           gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
         else
-          echo "1"
-          gh pr edit "$PR_ID" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
+          echo "Edited PR"
+          gh pr edit "$PR_ID" --body "Copied en_us.json from private repo, latest edit en_us commit: $COMMIT_HASH"
         fi
