@@ -97,6 +97,8 @@ jobs:
           BASE=$(git merge-base @ @{u})
           if [ $LOCAL = $REMOTE ]; then
             echo "Branch is up-to-date"
+            rm -r private-repo
+            exit 1
           elif [ $LOCAL = $BASE ]; then
             echo "Branch needs to pull"
             git pull origin $BRANCH_NAME # Pull latest update branch changes
@@ -108,7 +110,6 @@ jobs:
           fi
         fi
         cp private-repo/upstream/en_us.json langs/upstream/en_us.json
-        ls
         rm -r private-repo
         git add langs/upstream/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
