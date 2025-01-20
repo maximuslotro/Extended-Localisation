@@ -96,9 +96,7 @@ jobs:
           REMOTE=$(git rev-parse @{u})
           BASE=$(git merge-base @ @{u})
           if [ $LOCAL = $REMOTE ]; then
-            echo "Branch is up-to-date"
-            rm -r private-repo
-            exit 1
+            echo "Branch is up-to-date" #local=remote(before new lang commit) so we are good to continue
           elif [ $LOCAL = $BASE ]; then
             echo "Branch needs to pull"
             git pull origin $BRANCH_NAME # Pull latest update branch changes
