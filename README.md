@@ -18,14 +18,14 @@ Localisation source repo for Lotr: Renewed Extended. Any and all localizations a
 * (ru_ru) Russian (Русский (Россия))
   * Localization: 1.5.0?
   * Speachbanks: 1.5.2?
-* (zh_cn) Chinese Simplified (Mainland China; Mandarin) (简体中文(中国大陆))
+* (zh_cn) Chinese Simplified (Mainland China; Mandarin) (简体中文 (中国大陆))
   * Localization: 1.5.0?
   * Speachbanks: N/A
-* (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文(香港特別行政區))
+* (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
   * Localization: 1.7.1
   * Speachbanks: N/A
 ### Renewed overrides present:
-* (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文(香港特別行政區))
+* (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
   * Present: Localization, Speachbanks (COMPLETE)
 
 ## Contributing Instructions:
