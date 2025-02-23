@@ -15,14 +15,23 @@ Localisation source repo for Lotr: Renewed Extended. Any and all localizations a
 * (fr_fr) European French (Français (France))
   * Localization: 1.7.1
   * Speachbanks: N/A
+* (bs_ba) Bosnian (Bosanski (Bosna i Hercegovina))
+  * Localization: 1.7.2
+  * Speachbanks: N/A
+* (hr_hr) Croatian (Hrvatski (Hrvatska))
+  * Localization: 1.7.2
+  * Speachbanks: N/A
 * (ru_ru) Russian (Русский (Россия))
   * Localization: 1.5.0?
   * Speachbanks: 1.5.2?
+* (sr_cs) Serbian (Latin) (Srpski (Srbija))
+  * Localization: 1.7.2
+  * Speachbanks: N/A
 * (zh_cn) Chinese Simplified (Mainland China; Mandarin) (简体中文 (中国大陆))
   * Localization: 1.5.0?
   * Speachbanks: N/A
 * (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
-  * Localization: 1.7.1
+  * Localization: 1.7.2
   * Speachbanks: N/A
 ### Renewed overrides present:
 * (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
