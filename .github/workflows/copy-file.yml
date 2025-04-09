@@ -1,9 +1,6 @@
 name: Copy File from Extended Repo
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
