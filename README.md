@@ -3,7 +3,7 @@ Localisation source repo for Lotr: Renewed Extended. Any and all localizations a
 
 ## Locations for Extended Localizations:
 *  Localization files are in [/langs/](https://github.com/maximuslotro/Extended-Localisation/tree/main/langs)
-*  Speechbank localization files are in [/speechbanks/](https://github.com/maximuslotro/Extended-Localisation/tree/main/speachbanks)
+*  Speechbank localization files are in [/speechbanks/](https://github.com/maximuslotro/Extended-Localisation/tree/main/speachbanks) (Including the English speechbanks)
 *  The latest up-to-date english translation for Extended can be found in [/langs/upstream/](https://github.com/maximuslotro/Extended-Localisation/tree/main/langs/upstream)
 
 ## Updating/Override Renewed Localizations:
