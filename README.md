@@ -31,7 +31,7 @@ Localisation source repo for Lotr: Renewed Extended. Any and all localizations a
   * Localization: 1.5.0?
   * Speachbanks: N/A
 * (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
-  * Localization: 1.7.2
+  * Localization: 1.7.3
   * Speachbanks: N/A
 ### Renewed overrides present:
 * (zh_tw) Chinese Traditional (Taiwan; Mandarin) (繁體中文 (台灣))
