@@ -1,0 +1,6 @@
+# Linguist Json Overrides
+*.json linguist-vendored=false
+*.json linguist-generated=false
+*.json linguist-documentation=false
+*.json linguist-detectable=true
+*.json linguist-language=JSON
