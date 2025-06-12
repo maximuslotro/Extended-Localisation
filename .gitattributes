@@ -1,3 +1,44 @@
+# Linguist Documentation Overrides
+/wiki/docs/** linguist-documentation=false
+/wiki/overrides/** linguist-documentation=false
+
+# Linguist Markdown Overrides
+*.md linguist-vendored=false
+*.md linguist-generated=false
+*.md linguist-documentation=false
+*.md linguist-detectable=true
+
+README.md linguist-detectable=false
+readme.md linguist-detectable=false
+
+# Linguist YAML Overrides
+*.js linguist-vendored=false
+*.js linguist-generated=false
+*.js linguist-documentation=false
+*.js linguist-detectable=true
+*.js linguist-language=JavaScript
+
+# Linguist Python Overrides
+*.py linguist-vendored=false
+*.py linguist-generated=false
+*.py linguist-documentation=false
+*.py linguist-detectable=true
+*.py linguist-language=Python
+
+# Linguist HTML Overrides
+*.html linguist-vendored=false
+*.html linguist-generated=false
+*.html linguist-documentation=false
+*.html linguist-detectable=true
+*.html linguist-language=HTML
+
+# Linguist YAML Overrides
+*.yml linguist-vendored=false
+*.yml linguist-generated=false
+*.yml linguist-documentation=false
+*.yml linguist-detectable=true
+*.yml linguist-language=YAML
+
 # Linguist Json Overrides
 *.json linguist-vendored=false
 *.json linguist-generated=false
