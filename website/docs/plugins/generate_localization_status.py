@@ -166,20 +166,24 @@ def load_locale_file(file_path):
         log.error(f"Error loading {file_path}: {e}")
         return {}
 
-def process_localization_folder(folder_path):
+def get_localization_progress(folder_path, title):
     folder = (PROJECT_ROOT / folder_path).resolve()
     base_file = folder / f"{BASE_LANG}.json"
     base = load_locale_file(base_file)
 
     if not base:
         log.error(f"Base language file missing or empty at {base_file}")
-        return "<p><strong>⚠ Base language file missing.</strong></p>"
+        return None
 
     base_keys = set(base.keys())
     files = list(folder.glob("*.json"))
     log.info(f"Processing folder: {folder_path}, found {len(files)} JSON files")
 
-    entries = []
+    section_data = {
+        "section": title,
+        "total_strings": len(base_keys),
+        "languages": []
+    }
 
     for file in files:
         lang = file.stem
@@ -187,60 +191,63 @@ def process_localization_folder(folder_path):
             continue
 
         localized = load_locale_file(file)
-        localized_keys = set(localized.keys())
+        if not localized:
+            continue
 
+        localized_keys = set(localized.keys())
         missing = base_keys - localized_keys
         extra = localized_keys - base_keys
         completed = len(base_keys) - len(missing)
 
         percent = 100 if not missing else int(100 * completed / len(base_keys))
 
-        if percent == 100 and missing:
-            log.warning(f"{lang} marked 100% but has missing keys: {missing}")
-
-        entries.append({
+        section_data["languages"].append({
             "lang": lang,
             "percent": percent,
-            "missing": missing,
-            "extra": extra,
+            "missing": sorted(missing),
+            "extra": sorted(extra)
         })
 
-    entries.sort(key=lambda e: (-e["percent"], e["lang"]))
-        
-    progress_html = []
+    return section_data
 
-    for entry in entries:
+def build_section_html(section_data):
+    if not section_data:
+        return "<p><strong>⚠ Base language file missing.</strong></p>"
+
+    translated_langs = [lang for lang in section_data["languages"] if lang["percent"] > 0]
+    avg_percent = int(sum(lang["percent"] for lang in translated_langs) / len(translated_langs)) if translated_langs else 0
+
+    html = [
+        f'<details class="section-summary">',
+        f'<summary>',
+        f'<div style="display: flex; justify-content: space-between; align-items: center;">',
+        f'<strong>{section_data["section"]} — {len(translated_langs)} languages</strong>',
+        f'<span>{avg_percent}% <progress value="{avg_percent}" max="100" style="width: 100px;"></progress></span>',
+        f'</div>',
+        f'</summary>'
+    ]
+    for entry in sorted(translated_langs, key=lambda x: (-x["percent"], x["lang"])):
         lang = entry["lang"]
-        percent = entry["percent"]
-        missing = entry["missing"]
-        extra = entry["extra"]
-
         display_name = LANG_DISPLAY_NAMES.get(lang.lower(), f"Localized ({lang.upper()})")
-        progress_html.append('<details class="lang-summary">')
-        progress_html.append(
-            f'<summary>'
-            f'<div style="display: flex; justify-content: space-between; align-items: center;">'
-            f'<span><strong>{display_name}</strong></span>'
-            f'<span>{percent}% <progress value="{percent}" max="100"></progress></span>'
-            f'</div>'
-            f'</summary>'
-        )
 
-        if missing:
-            progress_html.append("<details><summary>🔴 Missing strings</summary><ul>")
-            for key in sorted(missing):
-                progress_html.append(f"<li><code>{key}</code></li>")
-            progress_html.append("</ul></details>")
+        html.append(f'<details class="lang-summary"><summary><div style="display: flex; justify-content: space-between;"><span>{display_name}</span><span>{entry["percent"]}% <progress value="{entry["percent"]}" max="100"></progress></span></div></summary>')
 
-        if extra:
-            progress_html.append("<details><summary>⚠️ Strings to remove (obsolete)</summary><ul>")
-            for key in sorted(extra):
-                progress_html.append(f"<li><code>{key}</code></li>")
-            progress_html.append("</ul></details>")
+        if entry["missing"]:
+            html.append("<details><summary>Missing strings</summary><ul>")
+            for key in entry["missing"]:
+                html.append(f"<li><code>{key}</code></li>")
+            html.append("</ul></details>")
 
-        progress_html.append("</details>")
+        if entry["extra"]:
+            html.append("<details><summary>Strings to remove</summary><ul>")
+            for key in entry["extra"]:
+                html.append(f"<li><code>{key}</code></li>")
+            html.append("</ul></details>")
 
-    return "\n".join(progress_html)
+        html.append("</details>")  # Close lang summary
+
+    html.append("</details>")  # Close section summary
+    return '\n'.join(html)
 
 def on_page_markdown(markdown, page: Page, config: MkDocsConfig, files):
     def render_infobox(match):
@@ -253,11 +260,13 @@ def on_page_markdown(markdown, page: Page, config: MkDocsConfig, files):
                 entries[key.lower()] = value
 
         title = entries.get('title', 'Localizations')
+        sub_title = entries.get('sub_title', 'Localizations count')
         folder_path = entries.get('folder_path', 'locales')
 
-        # Build the HTML for this section
+        section_data = get_localization_progress(folder_path, sub_title)
+
         html = [f'<div class="infobox"><div class="infobox-header"><h2>{title}</h2></div>']
-        html.append(process_localization_folder(folder_path))
+        html.append(build_section_html(section_data))
         html.append('</div>')
 
         return '\n'.join(html)
