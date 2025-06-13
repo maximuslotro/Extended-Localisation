@@ -1,7 +1,7 @@
 site_name: "LOTR: Renewed Extended Localization Information"
-site_url: https://lotrextendedteam.github.io/Extended-Localisation/
-repo_url: https://github.com/LotrExtendedTeam/Extended-Localisation
-repo_name: Extended-Localisation
+site_url: https://lotrextendedteam.github.io/Extended-Localization/
+repo_url: https://github.com/LotrExtendedTeam/Extended-Localization
+repo_name: Extended-Localization
 edit_uri: edit/main/website/docs/
 
 theme:

@@ -1,22 +1,24 @@
-# Extended-Localisation
-Localisation source repo for Lotr: Renewed Extended. Any and all localizations accepted.
+# Extended-Localization
+Localization source repo for Lotr: Renewed Extended. Any and all localizations accepted.
 
-Please check the [Website for up-to-date-status](https://lotrextendedteam.github.io/Extended-Localisation/) for all localizations.
+Please check the [Website for up-to-date-status](https://lotrextendedteam.github.io/Extended-Localization/) for all localizations.
 
 ## Locations for Extended Localizations:
-*  Localization files are in [/langs/](https://github.com/maximuslotro/Extended-Localisation/tree/main/langs)
-*  Speechbank localization files are in [/speechbanks/](https://github.com/maximuslotro/Extended-Localisation/tree/main/speechbanks) (Including the English speechbanks)
-*  The latest up-to-date english translation for Extended can be found in here: [/langs/en_us.json/](https://github.com/maximuslotro/Extended-Localisation/tree/main/langs/en_us.json) (in the langs folder)
+*  Localization files are in [/langs/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs)
+*  Speechbank localization files are in [/speechbanks/](https://github.com/maximuslotro/Extended-Localization/tree/main/speechbanks) (Including the English speechbanks)
+*  The latest up-to-date english translation for Extended can be found in here: [/langs/en_us.json/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs/en_us.json) (in the langs folder)
 
 ## Updating/Override Renewed Localizations:
-*  Renewed localization override files are in [/langs_renewed_override/](https://github.com/maximuslotro/Extended-Localisation/tree/main/langs_renewed_override)
-*  Renewed Speechbank localization override files are in [/speechbanks_renewed_override/](https://github.com/maximuslotro/Extended-Localisation/tree/main/speechbanks_renewed_override)
+*  Renewed localization override files are in [/langs_renewed_override/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs_renewed_override)
+*  Renewed Speechbank localization override files are in [/speechbanks_renewed_override/](https://github.com/maximuslotro/Extended-Localization/tree/main/speechbanks_renewed_override)
 
 ## Contributing Instructions:
 ### Localizations:
 If you wish to contribute, fork the repo, then add your new/updated lang files to your fork, then create a PR to this repo to have your localizations added into Extended.
 
-When updating localizations, ensure removed lines are removed, and all new lines are added. If the contents of a key changes, ensure your translation reflects the new value/meaning. 
+When updating localizations, ensure removed lines are removed, and all new lines are added. If the contents of a key changes, ensure your translation reflects the new value/meaning.
+
+Check the [Website](https://lotrextendedteam.github.io/Extended-Localization/) for info on what to correct.
 
 ## Github Tutorials
 *  How to fork: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo#forking-a-repository
