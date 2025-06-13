@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.pages import Page
-
+from collections import defaultdict
 
 INFOBOX_RE = re.compile(r'::infobox\n(.*?)\n::end-infobox', re.DOTALL)
 BASE_LANG = "en_us"
@@ -144,9 +144,9 @@ LANG_DISPLAY_NAMES = {
     "vp_vl": "Viossa (Viossa (Vilant)) (vp_vl)",
     "yi_de": "Yiddish (ייִדיש (אשכנזיש יידן)) (yi_de)",
     "yo_ng": "Yoruba (Yorùbá (Nàìjíríà)) (yo_ng)",
-    "zh_cn": "Chinese Simplified (Chinese Mainland) (简体中文（中国大陆)) (zh_cn)",
+    "zh_cn": "Chinese Simplified (Mainland China; Mandarin) (简体中文（中国大陆)) (zh_cn)",
     #"zh_hk": "Chinese Traditional (Hong Kong SAR) (繁體中文（香港特別行政區)) (zh_hk)",
-    "zh_tw": "Chinese Traditional (Taiwan) (繁體中文（台灣)) (zh_tw)",
+    "zh_tw": "Chinese Traditional (Taiwan; Mandarin) (繁體中文（台灣)) (zh_tw)",
     "zlm_arab": "Malay (Jawi) (بهاس ملايو (مليسيا)) (zlm_arab)"
 }
 
@@ -166,9 +166,20 @@ def load_locale_file(file_path):
         log.error(f"Error loading {file_path}: {e}")
         return {}
 
-def get_localization_progress(folder_path, title):
-    folder = (PROJECT_ROOT / folder_path).resolve()
-    base_file = folder / f"{BASE_LANG}.json"
+def get_localization_progress(folder_name, title, datatype):
+    folder_path = (PROJECT_ROOT / folder_name).resolve()
+    if datatype == 'lang':
+        return get_localization_progress_lang(folder_path, folder_name, title)
+    elif datatype == 'speechbank':
+        return get_localization_progress_speechbank(folder_path, folder_name, title)
+    elif datatype == 'sign_texts':
+        return get_localization_progress_sign_texts(folder_path, folder_name, title)
+    else:
+        log.error(f"Unknown datatype: {datatype}")
+        return None
+
+def get_localization_progress_lang(folder_path, folder_name, title):
+    base_file = folder_path / f"{BASE_LANG}.json"
     base = load_locale_file(base_file)
 
     if not base:
@@ -176,8 +187,8 @@ def get_localization_progress(folder_path, title):
         return None
 
     base_keys = set(base.keys())
-    files = list(folder.glob("*.json"))
-    log.info(f"Processing folder: {folder_path}, found {len(files)} JSON files")
+    files = list(folder_path.glob("*.json"))
+    log.info(f"Processing folder: {folder_name}, found {len(files)} JSON files")
 
     section_data = {
         "section": title,
@@ -210,6 +221,105 @@ def get_localization_progress(folder_path, title):
 
     return section_data
 
+def get_localization_progress_speechbank(folder_path, folder_name, title):
+    base_lang = BASE_LANG  # typically 'en_us'
+    #speechbank_folders = [f for f in folder.rglob('') if f.is_dir() and any(f.glob(f"{base_lang}.json"))]
+    
+    all_langs = set()
+    lang_file_map = defaultdict(set) # lang -> set of speechbank folder names
+
+    for speechbank_folder in folder_path.rglob(''):
+        if not speechbank_folder.is_dir():
+            continue
+
+        for file in speechbank_folder.glob("*.json"):
+            lang = file.stem.lower()
+            relative_path = speechbank_folder.relative_to(folder_path)
+            lang_file_map.setdefault(lang, set()).add(str(relative_path))
+            all_langs.add(lang)
+
+    if BASE_LANG not in lang_file_map:
+        log.error(f"Base language '{BASE_LANG}' not found in {folder_name}")
+        return None
+
+    base_set = lang_file_map[BASE_LANG]  # This now contains full relative paths (strings)
+    total = len(base_set)
+    log.info(f"Processing folder: {folder_name}, found {total} JSON files")
+    section_data = {
+        "section": title,
+        "total_strings": total,
+        "languages": []
+    }
+
+    for lang in sorted(all_langs):
+        if lang == base_lang:
+            continue
+        present = lang_file_map.get(lang, set())
+        missing = sorted(base_set - present)
+        percent = 100 if not missing else int(100 * (total - len(missing)) / total)
+        
+        section_data["languages"].append({
+            "lang": lang,
+            "percent": percent,
+            "missing": missing,
+            "extra": sorted(present - base_set)
+        })
+
+    return section_data
+
+def get_localization_progress_sign_texts(folder_path, folder_name, title):
+    base_lang = BASE_LANG  # e.g., "en_us"
+    all_files = list(folder_path.glob("*.json"))
+    pattern = re.compile(r"^(?P<type>.+?)_(?P<lang>[a-z]{2}_[a-z]{2})\.json$", re.IGNORECASE)
+
+    file_map = {}  # lang -> set of <sign_type>
+    all_langs = set()
+
+    for file in all_files:
+        match = pattern.match(file.name)
+        if not match:
+            continue
+        sign_type = match.group("type")
+        lang = match.group("lang").lower()
+        file_map.setdefault(lang, set()).add(sign_type)
+        all_langs.add(lang)
+
+    if base_lang not in file_map:
+        log.error(f"Base language '{base_lang}' has no sign_text files in {folder_name}")
+        return None
+
+    base_types = file_map[base_lang]
+    total = len(base_types)
+    log.info(f"Processing folder: {folder_name}, found {total} JSON files")
+
+    section_data = {
+        "section": title,
+        "total_strings": total,
+        "languages": []
+    }
+
+    for lang in sorted(all_langs):
+        if lang == base_lang:
+            continue
+
+        types_present = file_map.get(lang, set())
+        missing_types = sorted(base_types - types_present)
+        extra_types = sorted(types_present - base_types)
+
+        missing_files = [f"{t}_{lang}.json" for t in missing_types]
+        extra_files = [f"{t}_{lang}.json" for t in extra_types]
+
+        percent = 100 if not missing_files else int(100 * (total - len(missing_files)) / total)
+
+        section_data["languages"].append({
+            "lang": lang,
+            "percent": percent,
+            "missing": missing_files,
+            "extra": extra_files
+        })
+
+    return section_data
+
 def build_section_html(section_data):
     if not section_data:
         return "<p><strong>⚠ Base language file missing.</strong></p>"
@@ -221,7 +331,7 @@ def build_section_html(section_data):
         f'<details class="section-summary">',
         f'<summary>',
         f'<div style="display: flex; justify-content: space-between; align-items: center;">',
-        f'<strong>{section_data["section"]} — {len(translated_langs)} languages</strong>',
+        f'<strong>{section_data["section"]} — {len(translated_langs)} languages present</strong>',
         f'<span>{avg_percent}% <progress value="{avg_percent}" max="100" style="width: 100px;"></progress></span>',
         f'</div>',
         f'</summary>'
@@ -233,13 +343,13 @@ def build_section_html(section_data):
         html.append(f'<details class="lang-summary"><summary><div style="display: flex; justify-content: space-between;"><span>{display_name}</span><span>{entry["percent"]}% <progress value="{entry["percent"]}" max="100"></progress></span></div></summary>')
 
         if entry["missing"]:
-            html.append("<details><summary>Missing strings</summary><ul>")
+            html.append("<details><summary>Missing entries</summary><ul>")
             for key in entry["missing"]:
                 html.append(f"<li><code>{key}</code></li>")
             html.append("</ul></details>")
 
         if entry["extra"]:
-            html.append("<details><summary>Strings to remove</summary><ul>")
+            html.append("<details><summary>Entries to remove</summary><ul>")
             for key in entry["extra"]:
                 html.append(f"<li><code>{key}</code></li>")
             html.append("</ul></details>")
@@ -261,11 +371,13 @@ def on_page_markdown(markdown, page: Page, config: MkDocsConfig, files):
 
         title = entries.get('title', 'Localizations')
         sub_title = entries.get('sub_title', 'Localizations count')
-        folder_path = entries.get('folder_path', 'locales')
+        folder_name = entries.get('folder_name', 'locales')
+        datatype = entries.get('type', 'lang')
 
-        section_data = get_localization_progress(folder_path, sub_title)
+        section_data = get_localization_progress(folder_name, sub_title, datatype)
 
-        html = [f'<div class="infobox"><div class="infobox-header"><h2>{title}</h2></div>']
+        #html = [f'<div class="infobox"><div class="infobox-header"><h2>{title}</h2></div>']
+        html = [f'<div class="infobox">']
         html.append(build_section_html(section_data))
         html.append('</div>')
 
