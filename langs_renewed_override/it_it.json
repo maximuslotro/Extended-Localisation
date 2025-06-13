@@ -1358,6 +1358,7 @@
     "block.lotr.bree_crafting_table": "Banco da lavoro della Terra di Brea",
     "block.lotr.palantir": "Palantír",
     "block.lotr.mordor_dirt_path": "Sentiero di terra di Mordor",
+    "block.lotr.chalk_path": "Sentiero di gesso",
 
     "item.lotr.gold_ring": "Anello d'oro",
     "item.lotr.copper_ingot": "Lingotto di rame",
@@ -1728,6 +1729,7 @@
     "item.lotr.pouch.picked_up_new_items": "Nuovi oggetti raccolti",
     "item.lotr.pouch.dyed": "Tinta",
     "item.lotr.pouch.dyed.faction": "Tinta coi colori di %s",
+    "item.lotr.warg_bone": "Osso di warg",
 
     "item.lotr.drink.weak": "Debole",
     "item.lotr.drink.light": "Leggero",
@@ -1909,6 +1911,7 @@
     "biome.lotr.umbar_forest": "Foresta di Umbar",
     "biome.lotr.umbar_hills": "Colline di Umbar",
     "biome.lotr.field_of_cormallen": "Campo di Cormallen",
+    "biome.lotr.hills_of_evendim": "Colli di Evendim",
 
     "entity.lotr.ring_portal": "Portale dell'Anello",
 
@@ -1957,6 +1960,11 @@
     "entity.lotr.bree_man": "Uomo di Brea",
     "entity.lotr.bree_hobbit": "Hobbit di Brea",
     "entity.lotr.bree_guard": "Guardia della Terra di Brea",
+    "entity.lotr.gundabad_warg": "Warg del Gundabad",
+    "entity.lotr.isengard_warg": "Warg di Isengard",
+    "entity.lotr.mordor_warg": "Warg di Mordor",
+    "entity.lotr.isengard_snaga": "Snaga di Isengard",
+    "entity.lotr.isengard_snaga_archer": "Snaga arciere di Isengard",
 
     "entity.lotr.caracal": "Caracal",
 
@@ -2005,6 +2013,11 @@
     "item.lotr.bree_man_spawn_egg": "Uovo generatore di uomo di Brea",
     "item.lotr.bree_hobbit_spawn_egg": "Uovo generatore di hobbit di Brea",
     "item.lotr.bree_guard_spawn_egg": "Uovo generatore di guardia della Terra di Brea",
+    "item.lotr.gundabad_warg_spawn_egg": "Uovo generatore di warg del Gundabad",
+    "item.lotr.isengard_warg_spawn_egg": "Uovo generatore di warg di Isengard",
+    "item.lotr.mordor_warg_spawn_egg": "Uovo generatore di warg di Mordor",
+    "item.lotr.isengard_snaga_spawn_egg": "Uovo generatore di snaga di Isengard",
+    "item.lotr.isengard_snaga_archer_spawn_egg": "Uovo generatore di snaga arciere di Isengard",
 
     "item.lotr.caracal_spawn_egg": "Uovo generatore di caracal",
 
@@ -2073,6 +2086,8 @@
     "generator.lotr.me.info": "Nasci direttamente nella Terra di Mezzo",
     "generator.lotr.me_classic": "TdM Classica",
     "generator.lotr.me_classic.info": "Nasci direttamente nella Terra di Mezzo con la generazione casuale dei biomi",
+
+    "gui.lotr.loading.enter_middle_earth": "Ingresso nella Terra di Mezzo",
 
     "gui.lotr.compass.coords": "%d, %d, %d",
 
@@ -3111,6 +3126,10 @@
     "subtitles.lotr.entity.orc.death": "Orco muore",
     "subtitles.lotr.entity.orc.ghash": "Orco innesca una bomba",
     "subtitles.lotr.entity.orc.hurt": "Orco viene ferito",
+    "subtitles.lotr.entity.warg.ambient": "Warg ringhia",
+    "subtitles.lotr.entity.warg.attack": "Warg attacca",
+    "subtitles.lotr.entity.warg.death": "Warg muore",
+    "subtitles.lotr.entity.warg.hurt": "Warg viene ferito",
     "subtitles.lotr.event.fast_travel": "Viaggio rapido",
     "subtitles.lotr.event.pledge": "Giuramento fatto",
     "subtitles.lotr.event.trade": "Commercio",
@@ -3219,6 +3238,7 @@
     "config.lotr.immersiveSpeech": "Conversazioni immersive",
     "config.lotr.immersiveSpeechChatLog": "Chat log delle conversazioni immersive",
     "config.lotr.immersiveSpeechDuration": "Durata conversazioni immersive",
+    "config.lotr.displayAlignmentAboveHead": "Visualizza allineamento sopra la testa",
 
     "config.lotr.dolAmrothChestplateWings": "Numero di ali delle corazze di Dol Amroth",
     "config.lotr.mannishWomenUseAlexModelStyle": "Donne umane usano il modello “Alex”",
@@ -3242,5 +3262,6 @@
     "config.lotr.generateBiomeJsons": "Genera file JSON per i biomi della Terra di Mezzo",
     
     "config.lotr.forceMapLocations": "Forza nascondi/mostra posizioni sulla mappa",
-    "config.lotr.forceFogOfWar": "Forza abilita/disabilita nebbia di guerra sulla mappa"
+    "config.lotr.forceFogOfWar": "Forza abilita/disabilita nebbia di guerra sulla mappa",
+    "config.lotr.playerDataClearingInterval": "Intervallo di cancellazione dati dei giocatori LOTR offline"
 }
