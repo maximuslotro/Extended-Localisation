@@ -4,7 +4,12 @@ on:
     branches:
       - main
     paths:
-      - 'wiki/**'
+      - 'langs/**'
+      - 'langs_renewed_override/**'
+      - 'speechbanks/**'
+      - 'speechbanks_renewed_override/**'
+      - 'structure_sign_texts/**'
+      - 'website/**'
   workflow_dispatch:
 permissions:
   contents: write
