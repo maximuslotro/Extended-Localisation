@@ -104,9 +104,9 @@ jobs:
             exit 1
           fi
         fi
-        cp private-repo/upstream/en_us.json langs/upstream/en_us.json
+        cp private-repo/upstream/en_us.json langs/en_us.json
         rm -r private-repo
-        git add langs/upstream/en_us.json
+        git add langs/en_us.json
         git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
         git push origin $BRANCH_NAME
         PR_ID=${{ steps.pr-check.outputs.pr_id }}

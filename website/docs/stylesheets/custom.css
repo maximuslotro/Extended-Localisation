@@ -1,0 +1,19 @@
+.lang-summary summary {
+  cursor: pointer;
+  padding: 0.4em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  margin-bottom: 0.5em;
+}
+
+.lang-summary summary:hover {
+  background-color: #f1f1f1;
+}
+
+.lang-summary summary > div {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

@@ -1,0 +1,46 @@
+site_name: "LOTR: Renewed Extended Localization Information"
+site_url: https://lotrextendedteam.github.io/Extended-Localization/
+repo_url: https://github.com/LotrExtendedTeam/Extended-Localization
+repo_name: Extended-Localization
+edit_uri: edit/main/website/docs/
+
+theme:
+  name: material
+  color_mode: auto
+  language: en
+  logo: icons/logo.png
+  favicon: icons/logo.png
+  palette:
+
+  features:
+    - navigation.top #adds a button to jump to top of page
+    - content.action.edit #add edit button on upper right corner
+    - navigation.prune # prune bloat navigation
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+
+
+nav:
+    - index.md
+
+hooks:
+  - docs/plugins/generate_localization_status.py
+
+plugins:
+
+  - git-revision-date-localized:
+      enable_creation_date: true
+      fallback_to_build_date: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.snippets
+
+extra_css:
+    - stylesheets/custom.css
+
+extra_javascript:
+    - javascripts/history.js
