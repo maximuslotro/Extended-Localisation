@@ -72,7 +72,7 @@ jobs:
 
     - name: Create or update pull request
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.EXTENDED_LANG_REPO_CODE }}
       run: |
         BRANCH_NAME="update-from-private-lang"
         COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
