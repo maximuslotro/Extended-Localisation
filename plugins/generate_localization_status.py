@@ -174,6 +174,8 @@ def get_localization_progress(folder_name, title, datatype):
         return get_localization_progress_speechbank(folder_path, folder_name, title)
     elif datatype == 'sign_texts':
         return get_localization_progress_sign_texts(folder_path, folder_name, title)
+    elif datatype == 'fast_travel':
+        return get_localization_progress_fast_travel(folder_path, folder_name, title)
     else:
         log.error(f"Unknown datatype: {datatype}")
         return None
@@ -193,7 +195,8 @@ def get_localization_progress_lang(folder_path, folder_name, title):
     section_data = {
         "section": title,
         "total_strings": len(base_keys),
-        "languages": []
+        "languages": [],
+        "use_progress" : True
     }
 
     for file in files:
@@ -248,7 +251,8 @@ def get_localization_progress_speechbank(folder_path, folder_name, title):
     section_data = {
         "section": title,
         "total_strings": total,
-        "languages": []
+        "languages": [],
+        "use_progress" : True
     }
 
     for lang in sorted(all_langs):
@@ -295,7 +299,8 @@ def get_localization_progress_sign_texts(folder_path, folder_name, title):
     section_data = {
         "section": title,
         "total_strings": total,
-        "languages": []
+        "languages": [],
+        "use_progress" : True
     }
 
     for lang in sorted(all_langs):
@@ -320,6 +325,28 @@ def get_localization_progress_sign_texts(folder_path, folder_name, title):
 
     return section_data
 
+def get_localization_progress_fast_travel(folder_path, folder_name, title):
+    files = list(folder_path.glob("*.txt"))
+    langs = [f.stem.lower() for f in files if f.is_file()]
+    langs = sorted(set(langs))
+    log.info(f"Processing folder: {folder_name}, found {len(langs)} TXT files")
+    section_data = {
+        "section": title,
+        "total_strings": len(langs),  # not actually strings, but localized files
+        "languages": [],
+        "use_progress" : False
+    }
+
+    for lang in langs:
+        section_data["languages"].append({
+            "lang": lang,
+            "percent": 100,
+            "missing": [],
+            "extra": []
+        })
+
+    return section_data
+
 def build_section_html(section_data):
     if not section_data:
         return "<p><strong>⚠ Base language file missing.</strong></p>"
@@ -332,15 +359,22 @@ def build_section_html(section_data):
         f'<summary>',
         f'<div style="display: flex; justify-content: space-between; align-items: center;">',
         f'<strong>{section_data["section"]} — {len(translated_langs)} languages present</strong>',
-        f'<span>{avg_percent}% <progress value="{avg_percent}" max="100" style="width: 100px;"></progress></span>',
+    ]
+    if section_data.get("use_progress", True):
+        html.append(f'<span>{avg_percent}% <progress value="{avg_percent}" max="100" style="width: 100px;"></progress></span>')
+    html.extend([
         f'</div>',
         f'</summary>'
-    ]
+    ])
+
     for entry in sorted(translated_langs, key=lambda x: (-x["percent"], x["lang"])):
         lang = entry["lang"]
         display_name = LANG_DISPLAY_NAMES.get(lang.lower(), f"Localized ({lang.upper()})")
 
-        html.append(f'<details class="lang-summary"><summary><div style="display: flex; justify-content: space-between;"><span>{display_name}</span><span>{entry["percent"]}% <progress value="{entry["percent"]}" max="100"></progress></span></div></summary>')
+        if section_data["use_progress"]:
+            html.append(f'<details class="lang-summary"><summary><div style="display: flex; justify-content: space-between;"><span>{display_name}</span><span>{entry["percent"]}% <progress value="{entry["percent"]}" max="100"></progress></span></div></summary>')
+        else:
+            html.append(f'<details class="lang-summary"><summary><div style="display: flex; justify-content: space-between;"><span>{display_name}</span></div></summary>')
 
         if entry["missing"]:
             html.append("<details><summary>Missing entries</summary><ul>")
@@ -376,8 +410,8 @@ def on_page_markdown(markdown, page: Page, config: MkDocsConfig, files):
 
         section_data = get_localization_progress(folder_name, sub_title, datatype)
 
-        #html = [f'<div class="infobox"><div class="infobox-header"><h2>{title}</h2></div>']
-        html = [f'<div class="infobox">']
+        html = [f'<div class="infobox"><div class="infobox-header"><h4>  - {title}</h4></div>']
+        #html = [f'<div class="infobox">']
         html.append(build_section_html(section_data))
         html.append('</div>')
 
