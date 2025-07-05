@@ -6,50 +6,59 @@ hide:
 
 # Localization
 
-This website gives a visual overview of the total and individual progress of the mod into each supported language in Minecraft.
-The progress is split between the lang.json files and speechbank files.
+This site provides a visual overview of the mod’s localization progress across all supported [Minecraft languages](https://minecraft.wiki/w/Language).
+Localization is tracked separately for `lang.json/.txt` files and speechbank files.
 
 ## Extended Localization
 
-This section documents the localization of everything added by Extended.
+This section tracks localization coverage for all content added by [*Extended*](https://legacy.curseforge.com/minecraft/mc-mods/lotr-renewed-extended).
 
 ::infobox
-title: Language Localization
-sub_title: Localization
+title: Language Localizations
+sub_title: Core Language Files
 folder_name: langs
 type: lang
 ::end-infobox
 
 ::infobox
-title: Speechbank Localization
-sub_title: Speechbank Localization
+title: Speechbank Localizations
+sub_title: NPC Dialogue
 folder_name: speechbanks
 type: speechbank
 ::end-infobox
 
 ::infobox
-title: Sign Text Localization
-sub_title: Sign Text Localization
+title: Sign Text Localizations
+sub_title: Structure Sign Localization
 folder_name: structure_sign_texts
 type: sign_texts
 ::end-infobox
 
 ## Renewed Override Localizations
 
-This section documents the ongoinging localization of everything added by Renewed.
-In Renewed, multiple languages have incomplete or incorrect translations. This project also aims to supply players with full correct mod translations.
-Additionaly, languages that Renewed wasn't translated into are also supported and accepted.
+This section documents the ongoing localization of everything added by [*Renewed*](https://legacy.curseforge.com/minecraft/mc-mods/the-lord-of-the-rings-mod-renewed).
+
+Many languages in Renewed have incomplete, incorrect, or entirely missing translations. This project aims to provide players with thorough high-quality, and accurate mod translations.
+
+We actively support languages that were not originally translated in Renewed.
 
 ::infobox
-title: Override Localizations
-sub_title: Override Localization
+title: Override Language Localizations
+sub_title: Overridden Core Language Files
 folder_name: langs_renewed_override
 type: lang
 ::end-infobox
 
 ::infobox
-title: Override Speechbank Localization
-sub_title: Override Speechbank Localization
+title: Override Speechbank Localizations
+sub_title: Overridden NPC Dialogue
 folder_name: speechbanks_renewed_override
 type: speechbank
+::end-infobox
+
+::infobox
+title: Override Fast Travel Quotes Localizations
+sub_title: Overridden Fast Travel Quotes
+folder_name: fast_travel_quotes
+type: fast_travel
 ::end-infobox

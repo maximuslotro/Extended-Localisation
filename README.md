@@ -4,13 +4,14 @@ Localization source repo for Lotr: Renewed Extended. Any and all localizations a
 Please check the [Website for up-to-date-status](https://lotrextendedteam.github.io/Extended-Localization/) for all localizations.
 
 ## Locations for Extended Localizations:
-*  Localization files are in [/langs/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs)
-*  Speechbank localization files are in [/speechbanks/](https://github.com/maximuslotro/Extended-Localization/tree/main/speechbanks) (Including the English speechbanks)
-*  The latest up-to-date english translation for Extended can be found in here: [/langs/en_us.json/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs/en_us.json) (in the langs folder)
+*  Localization files are in [/langs/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/langs)
+*  Speechbank localization files are in [/speechbanks/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/speechbanks) (Including the English speechbanks)
+*  The latest up-to-date english translation for Extended can be found in here: [/langs/en_us.json/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/langs/en_us.json) (in the langs folder)
 
-## Updating/Override Renewed Localizations:
-*  Renewed localization override files are in [/langs_renewed_override/](https://github.com/maximuslotro/Extended-Localization/tree/main/langs_renewed_override)
-*  Renewed Speechbank localization override files are in [/speechbanks_renewed_override/](https://github.com/maximuslotro/Extended-Localization/tree/main/speechbanks_renewed_override)
+## Updating/Adding new Renewed Localizations:
+*  Renewed localization override files are in [/langs_renewed_override/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/langs_renewed_override)
+*  Renewed Speechbank localization override files are in [/speechbanks_renewed_override/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/speechbanks_renewed_override)
+*  Renewed Fast Travel Quotes override files are in [/fast_travel_quotes/](https://github.com/LotrExtendedTeam/Extended-Localization/tree/main/fast_travel_quotes)
 
 ## Contributing Instructions:
 ### Localizations:
