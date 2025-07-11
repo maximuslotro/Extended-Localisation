@@ -18,6 +18,7 @@ permissions:
 
 jobs: 
   build_mkdocs:
+    if: github.repository == 'LotrExtendedTeam/Extended-Localization'
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +35,7 @@ jobs:
       - run: mkdocs gh-deploy --config-file website/mkdocs.yml --force
 
   deploy_mkdocs:
+    if: github.repository == 'LotrExtendedTeam/Extended-Localization'
     needs: build_mkdocs
     environment:
       name: github-pages
