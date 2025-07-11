@@ -7,7 +7,7 @@ hide:
 # Localization
 
 This site provides a visual overview of the mod’s localization progress across all supported [Minecraft languages](https://minecraft.wiki/w/Language).
-Localization is tracked separately for `lang.json/.txt` files and speechbank files.
+Localization is tracked separately for each localizable text/file type.
 
 ## Extended Localization
 
