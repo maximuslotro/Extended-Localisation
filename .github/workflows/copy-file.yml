@@ -138,7 +138,7 @@ jobs:
 
       - name: Update last commit hash variable
         env:
-          PAT: ${{ secrets.GH_VAR_PAT }}
+          GH_TOKEN: ${{ secrets.GH_VAR_PAT }}
           COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
         run: |
           gh variable set LASTENUSCOMMENT --body "$COMMIT_HASH"
