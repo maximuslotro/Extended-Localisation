@@ -116,9 +116,11 @@ jobs:
               --body "Copied en_us.json from private repo, latest commit: $COMMIT_HASH" \
               --head $UPDATE_BRANCH \
               --base main \
-              --label "lang-sync"
+              --label "Lang-Sync"
           else
-            gh pr edit "$PR_ID" --body "Copied en_us.json from private repo, latest commit: $COMMIT_HASH"
+            gh pr edit "$PR_ID" \
+              --body "Copied en_us.json from private repo, latest commit: $COMMIT_HASH" \
+              --add-label "Lang-Sync"
           fi
 
       - name: Update last commit hash variable
