@@ -3,125 +3,125 @@ name: Copy File from Extended Repo
 on:
   workflow_dispatch:
 
+env:
+  SRC_REPO: LotrExtendedTeam/LotrRenewedExtended
+  SRC_BRANCH: main
+  SRC_FILE_PATH: src/generated/resources/assets/lotrextended/lang/en_us.json
+  TARGET_FILE_PATH: langs/en_us.json
+  UPDATE_BRANCH: update-from-private-lang
+
 jobs:
   copy-file:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source repository
-      uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout target repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
+          clean: false
 
-    - name: Set up Git
-      run: |
-        git config --global user.email "61996354+maximuslotro@users.noreply.github.com"
-        git config --global user.name "maximuslotro"
+      - name: Set up Git identity
+        run: |
+          git config --global user.email "lotrextendedbot@users.noreply.github.com"
+          git config --global user.name "LotR Extended Bot"
 
-    - name: Clone private repository
-      env:
-        PAT: ${{ secrets.EXTENDED_REPO_CODE }}
-      run: |
-        git clone https://LotrExtendedTeam:${PAT}@github.com/LotrExtendedTeam/LotrRenewedExtended.git private-repo
-        git checkout main  # Ensure we are on the main branch
+      - name: Clone private repository (shallow & sparse)
+        env:
+          PAT: ${{ secrets.EXTENDED_REPO_CODE }}
+        run: |
+          git clone --depth=1 --filter=blob:none --sparse https://x-access-token:${PAT}@github.com/${SRC_REPO}.git private-repo
+          cd private-repo
+          git sparse-checkout set $SRC_FILE_PATH
+          git checkout $SRC_BRANCH
 
-    - name: Find latest commit for en_us.json
-      id: get-commit
-      run: |
-        cd private-repo
-        COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- src/generated/resources/assets/lotrextended/lang/en_us.json)
-        echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
-
-    - name: Check if commit hash has changed
-      id: check-commit
-      run: |
-        PREVIOUS_COMMIT_HASH=${{ vars.LASTENUSCOMMENT }}
-        CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
-          if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
-            echo "Commit hash has changed. Proceeding with file push."
-          else
-            echo "Commit hash has not changed. Skipping."
-            exit 0  # Exit successfully without further actions
-          fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.EXTENDED_LANG_REPO_CODE }}
-
-    - name: Copy file
-      run: |
-        mkdir -p private-repo/upstream/
-        cp private-repo/src/generated/resources/assets/lotrextended/lang/en_us.json private-repo/upstream/en_us.json
-
-    - name: Checkout source repository
-      uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        clean: false
-
-    - name: Check for existing PR
-      id: pr-check
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        PR_ID=$(gh pr list --state open --head update-from-private-lang --json number --limit 1 --jq '.[0].number')
-        echo "ID: [$PR_ID]"
-        if [ -z "$PR_ID" ] || [ "$PR_ID" = "[]" ]; then
-          PR_ID="none"
-        fi
-        echo "ID: [$PR_ID]"
-        echo "pr_id=$PR_ID" >> $GITHUB_OUTPUT
-
-    - name: Create or update pull request
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        BRANCH_NAME="update-from-private-lang"
-        COMMIT_HASH=${{ steps.get-commit.outputs.commit_hash }}
-        git config pull.ff only
-        git remote update
-        git fetch -p 
-        _check_branch=$(git ls-remote --heads origin $BRANCH_NAME)
-        if [[ -z ${_check_branch} ]]; then
-          echo "Remote branch does not exist, making!"
-          git checkout -b $BRANCH_NAME
-          git push -u origin $BRANCH_NAME
-        else
-          echo "Remote branch exists"
-          git checkout $BRANCH_NAME
-          git fetch origin # Fetch the latest changes
-          # Check if the branch is up-to-date
-          LOCAL=$(git rev-parse @)
-          REMOTE=$(git rev-parse @{u})
-          BASE=$(git merge-base @ @{u})
-          if [ $LOCAL = $REMOTE ]; then
-            echo "Branch is up-to-date" #local=remote(before new lang commit) so we are good to continue
-          elif [ $LOCAL = $BASE ]; then
-            echo "Branch needs to pull"
-            git pull origin $BRANCH_NAME # Pull latest update branch changes
-          elif [ $REMOTE = $BASE ]; then
-            echo "Branch needs to push"
-          else
-            echo "Branch has diverged"
+      - name: Verify source file exists
+        run: |
+          if [ ! -f "private-repo/$SRC_FILE_PATH" ]; then
+            echo "Source file not found: private-repo/$SRC_FILE_PATH"
             exit 1
           fi
-        fi
-        cp private-repo/upstream/en_us.json langs/en_us.json
-        rm -r private-repo
-        git add langs/en_us.json
-        git commit -m "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH"
-        git push origin $BRANCH_NAME
-        PR_ID=${{ steps.pr-check.outputs.pr_id }}
-        if [ "$PR_ID" = "none" ]; then
-          echo "Made PR"
-          gh pr create --title "Update en_us.json" --body "Copied en_us.json from private repo, latest edit commit: $COMMIT_HASH" --head $BRANCH_NAME --base main
-        else
-          echo "Edited PR"
-          gh pr edit "$PR_ID" --body "Copied en_us.json from private repo, latest edit en_us commit: $COMMIT_HASH"
-        fi
 
-    - name: Check if commit hash has changed and Change
-      id: set-commit
-      run: |
-        CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
-        gh variable set LASTENUSCOMMENT --body "$CURRENT_COMMIT_HASH"
-      env:
-        GITHUB_TOKEN: ${{ secrets.EXTENDED_LANG_REPO_CODE }}
+      - name: Get latest commit hash for source file
+        id: get-commit
+        run: |
+          cd private-repo
+          COMMIT_HASH=$(git log -n 1 --pretty=format:%H -- $SRC_FILE_PATH)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_OUTPUT
+
+      - name: Check if commit hash has changed
+        id: check-commit
+        run: |
+          PREVIOUS_COMMIT_HASH=${{ vars.LASTENUSCOMMENT }}
+          CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
+          if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
+            echo "Commit hash changed. Proceeding."
+          else
+            echo "Commit hash unchanged. Exiting."
+            exit 0
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy file to target path
+        run: |
+          mkdir -p $(dirname $TARGET_FILE_PATH)
+          cp private-repo/$SRC_FILE_PATH $TARGET_FILE_PATH
+
+      - name: Remove private-repo folder
+        run: |
+          [ -d private-repo ] && rm -rf private-repo || echo "No private-repo directory to remove"
+
+      - name: Check for existing PR
+        id: pr-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_ID=$(gh pr list --state open --head ${{ env.UPDATE_BRANCH }} --json number --limit 1 --jq '.[0].number')
+          if [ -z "$PR_ID" ] || [ "$PR_ID" = "null" ]; then
+            PR_ID="none"
+          fi
+          echo "pr_id=$PR_ID" >> $GITHUB_OUTPUT
+
+      - name: Create or update pull request branch and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
+          UPDATE_BRANCH: ${{ env.UPDATE_BRANCH }}
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/heads/$UPDATE_BRANCH; then
+            git checkout $UPDATE_BRANCH
+            git pull origin $UPDATE_BRANCH
+          else
+            git checkout -b $UPDATE_BRANCH
+          fi
+          git add $TARGET_FILE_PATH
+          git commit -m "Update en_us.json from private repo, commit: $COMMIT_HASH" || echo "No changes to commit"
+          git push -u origin $UPDATE_BRANCH --force
+
+      - name: Create or update Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
+          UPDATE_BRANCH: ${{ env.UPDATE_BRANCH }}
+        run: |
+          PR_ID=${{ steps.pr-check.outputs.pr_id }}
+          if [ "$PR_ID" = "none" ]; then
+            gh pr create \
+              --title "Update en_us.json" \
+              --body "Copied en_us.json from private repo, latest commit: $COMMIT_HASH" \
+              --head $UPDATE_BRANCH \
+              --base main \
+              --label "lang-sync"
+          else
+            gh pr edit "$PR_ID" --body "Copied en_us.json from private repo, latest commit: $COMMIT_HASH"
+          fi
+
+      - name: Update last commit hash variable
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
+        run: |
+          gh variable set LASTENUSCOMMENT --body "$COMMIT_HASH"
