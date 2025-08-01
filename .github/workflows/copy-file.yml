@@ -137,6 +137,7 @@ jobs:
           fi
 
       - name: Update last commit hash variable
+        if: steps.check-commit.outputs.changed == 'true' && steps.pr-status.outputs.skip_pr != 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_VAR_PAT }}
           COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
