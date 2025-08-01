@@ -100,6 +100,7 @@ jobs:
           fi
           git add $TARGET_FILE_PATH
           git commit -m "Update en_us.json from private repo, commit: $COMMIT_HASH" || echo "No changes to commit"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
           git push -u origin $UPDATE_BRANCH --force
 
       - name: Create or update Pull Request
