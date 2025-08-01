@@ -32,7 +32,7 @@ jobs:
         env:
           PAT: ${{ secrets.EXTENDED_REPO_CODE }}
         run: |
-          git clone --depth=1 --filter=blob:none --sparse https://x-access-token:${PAT}@github.com/${SRC_REPO}.git private-repo
+          git clone --filter=blob:none --sparse https://x-access-token:${PAT}@github.com/${SRC_REPO}.git private-repo
           cd private-repo
           git sparse-checkout set $SRC_FOLDER_PATH
           git checkout $SRC_BRANCH
@@ -57,7 +57,7 @@ jobs:
           PREVIOUS_COMMIT_HASH=${{ vars.LASTENUSCOMMENT }}
           CURRENT_COMMIT_HASH=${{ steps.get-commit.outputs.COMMIT_HASH }}
           if [ "$PREVIOUS_COMMIT_HASH" != "$CURRENT_COMMIT_HASH" ]; then
-            echo "Commit hash changed. Proceeding."
+            echo "Commit hash changed. $CURRENT_COMMIT_HASH Proceeding."
           else
             echo "Commit hash unchanged. Exiting."
             exit 0
@@ -109,6 +109,12 @@ jobs:
           COMMIT_HASH: ${{ steps.get-commit.outputs.COMMIT_HASH }}
           UPDATE_BRANCH: ${{ env.UPDATE_BRANCH }}
         run: |
+          # Check for diff before PR
+          if git diff --quiet origin/main..HEAD; then
+            echo "No changes between $UPDATE_BRANCH and main. Skipping PR."
+            exit 0
+          fi
+          
           PR_ID=${{ steps.pr-check.outputs.pr_id }}
           if [ "$PR_ID" = "none" ]; then
             gh pr create \
