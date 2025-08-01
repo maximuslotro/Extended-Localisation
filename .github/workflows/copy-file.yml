@@ -6,6 +6,7 @@ on:
 env:
   SRC_REPO: LotrExtendedTeam/LotrRenewedExtended
   SRC_BRANCH: main
+  SRC_FOLDER_PATH: src/generated/resources/assets/lotrextended/lang
   SRC_FILE_PATH: src/generated/resources/assets/lotrextended/lang/en_us.json
   TARGET_FILE_PATH: langs/en_us.json
   UPDATE_BRANCH: update-from-private-lang
@@ -33,7 +34,7 @@ jobs:
         run: |
           git clone --depth=1 --filter=blob:none --sparse https://x-access-token:${PAT}@github.com/${SRC_REPO}.git private-repo
           cd private-repo
-          git sparse-checkout set $SRC_FILE_PATH
+          git sparse-checkout set $SRC_FOLDER_PATH
           git checkout $SRC_BRANCH
 
       - name: Verify source file exists
