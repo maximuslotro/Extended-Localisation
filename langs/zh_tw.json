@@ -1479,7 +1479,7 @@
   "entity.lotr.tolkien": "J·R·R·托爾金",
   "entity.lotr.trader_respawner": "商人重生點",
   "entity.lotrextended.hiredunits.entity_shortname": "%1$s",
-  "entity.lotrextended.hiredunits.entity_title": "%2$s,%1$s ",
+  "entity.lotrextended.hiredunits.entity_title": "%2$s %1$s ",
   "gui.lotrextended.banner_configuration.disabled": "旗幟保護已關閉",
   "gui.lotrextended.banner_configuration.faction.requires": "需要友好值:",
   "gui.lotrextended.banner_configuration.faction.textBox": "友好值",
